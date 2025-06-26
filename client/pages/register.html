@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | NeuroLearn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
+    }
+        /* Custom styles */
+        .form-input:focus {
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #6b7280;
+        }
+        .progress-bar {
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="w-full max-w-2xl bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="md:flex">
+            <!-- Left Side with Illustration -->
+            <div class="hidden md:block md:w-1/2 bg-gradient-to-br from-indigo-500 to-purple-600 p-8 flex items-center justify-center text-white">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold mb-2">Start Your Learning Journey</h2>
+                    <p class="mb-6">Join thousands of learners improving their skills with NeuroLearn</p>
+                    <div class="w-full max-w-xs mx-auto">
+                        <img src="../images/register_img.png" alt="Learning illustration" class="w-full h-auto">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Side with Form -->
+            <div class="w-full md:w-1/2 p-8">
+                <div class="flex justify-center mb-6">
+                    <span class="text-3xl font-bold text-indigo-600">Neuro<span class="text-gray-800">Learn</span></span>
+                </div>
+                
+                <h1 class="text-2xl font-bold text-gray-900 mb-6 text-center">Create your account</h1>
+                
+                <form id="registration-form" class="space-y-4">
+                    <!-- Full Name -->
+                    <div>
+                        <label for="full-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            <input type="text" id="full-name" name="full-name" required
+                                   class="form-input pl-10 block w-full rounded-lg border border-gray-300 focus:border-indigo-500 py-2"
+                                   placeholder="John Doe">
+                        </div>
+                    </div>
+                    
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            <input type="email" id="email" name="email" required
+                                   class="form-input pl-10 block w-full rounded-lg border border-gray-300 focus:border-indigo-500 py-2"
+                                   placeholder="your@email.com">
+                        </div>
+                    </div>
+                    
+                    <!-- Password -->
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" id="password" name="password" required
+                                   class="form-input pl-10 block w-full rounded-lg border border-gray-300 focus:border-indigo-500 py-2 pr-10"
+                                   placeholder="••••••••">
+                            <span class="password-toggle" id="toggle-password">
+                                <i class="fas fa-eye" id="password-icon"></i>
+                            </span>
+                        </div>
+                        <div class="mt-2">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs text-gray-500">Password strength:</span>
+                                <span class="text-xs" id="strength-text">Weak</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                                <div id="strength-bar" class="progress-bar bg-red-500 h-1.5 rounded-full" style="width: 20%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Confirm Password -->
+                    <div>
+                        <label for="confirm-password" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            <input type="password" id="confirm-password" name="confirm-password" required
+                                   class="form-input pl-10 block w-full rounded-lg border border-gray-300 focus:border-indigo-500 py-2 pr-10"
+                                   placeholder="••••••••">
+                            <span class="password-toggle" id="toggle-confirm-password">
+                                <i class="fas fa-eye" id="confirm-password-icon"></i>
+                            </span>
+                        </div>
+                        <p id="password-match" class="text-xs text-red-500 h-4"></p>
+                    </div>
+                    
+                    
+                    
+                    <!-- Terms Agreement -->
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            <input id="terms" name="terms" type="checkbox" required
+                                   class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="terms" class="font-medium text-gray-700">
+                                I agree to the <a href="#" class="text-indigo-600 hover:text-indigo-500">Terms of Service</a> and 
+                                <a href="#" class="text-indigo-600 hover:text-indigo-500">Privacy Policy</a>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div>
+                        <button type="submit" id="register-btn"
+                                class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                disabled>
+                            Create Account
+                        </button>
+                    </div>
+                    
+                    <!-- Login Link -->
+                    <div class="text-sm text-center text-gray-600">
+                        Already have an account? <a href="login.html" class="font-medium text-indigo-600 hover:text-indigo-500">Sign in</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password toggle functionality
+        const togglePassword = document.getElementById('toggle-password');
+        const passwordInput = document.getElementById('password');
+        const passwordIcon = document.getElementById('password-icon');
+        const toggleConfirmPassword = document.getElementById('toggle-confirm-password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const confirmPasswordIcon = document.getElementById('confirm-password-icon');
+
+        togglePassword.addEventListener('click', () => {
+            const type = passwordInput.type === 'password' ? 'text' : 'password';
+            passwordInput.type = type;
+            passwordIcon.classList.toggle('fa-eye');
+            passwordIcon.classList.toggle('fa-eye-slash');
+        });
+
+        toggleConfirmPassword.addEventListener('click', () => {
+            const type = confirmPasswordInput.type === 'password' ? 'text' : 'password';
+            confirmPasswordInput.type = type;
+            confirmPasswordIcon.classList.toggle('fa-eye');
+            confirmPasswordIcon.classList.toggle('fa-eye-slash');
+        });
+
+        // Password strength checker
+        passwordInput.addEventListener('input', checkPasswordStrength);
+        confirmPasswordInput.addEventListener('input', checkPasswordMatch);
+
+        function checkPasswordStrength() {
+            const password = passwordInput.value;
+            let strength = 0;
+            
+            // Check length
+            if (password.length >= 8) strength += 1;
+            if (password.length >= 12) strength += 1;
+            
+            // Check for mix of characters
+            if (/[a-z]/.test(password)) strength += 1;
+            if (/[A-Z]/.test(password)) strength += 1;
+            if (/[0-9]/.test(password)) strength += 1;
+            if (/[^a-zA-Z0-9]/.test(password)) strength += 1;
+            
+            // Update UI
+            const strengthBar = document.getElementById('strength-bar');
+            const strengthText = document.getElementById('strength-text');
+            
+            if (password.length === 0) {
+                strengthBar.style.width = '0%';
+                strengthBar.className = 'progress-bar bg-gray-200 h-1.5 rounded-full';
+                strengthText.textContent = '';
+            } else if (strength <= 2) {
+                strengthBar.style.width = '20%';
+                strengthBar.className = 'progress-bar bg-red-500 h-1.5 rounded-full';
+                strengthText.textContent = 'Weak';
+                strengthText.className = 'text-xs text-red-500';
+            } else if (strength <= 4) {
+                strengthBar.style.width = '60%';
+                strengthBar.className = 'progress-bar bg-yellow-500 h-1.5 rounded-full';
+                strengthText.textContent = 'Medium';
+                strengthText.className = 'text-xs text-yellow-500';
+            } else {
+                strengthBar.style.width = '100%';
+                strengthBar.className = 'progress-bar bg-green-500 h-1.5 rounded-full';
+                strengthText.textContent = 'Strong';
+                strengthText.className = 'text-xs text-green-500';
+            }
+            
+            checkFormValidity();
+        }
+
+        function checkPasswordMatch() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+            const passwordMatch = document.getElementById('password-match');
+            
+            if (confirmPassword.length === 0) {
+                passwordMatch.textContent = '';
+            } else if (password !== confirmPassword) {
+                passwordMatch.textContent = 'Passwords do not match';
+            } else {
+                passwordMatch.textContent = '';
+                checkFormValidity();
+            }
+        }
+
+        function checkFormValidity() {
+            const form = document.getElementById('registration-form');
+            const submitButton = document.getElementById('register-btn');
+            
+            // Check all required fields are filled
+            let isValid = true;
+            const requiredInputs = form.querySelectorAll('input[required]');
+            
+            requiredInputs.forEach(input => {
+                if (!input.value) isValid = false;
+                if (input.id === 'password' && input.value.length < 8) isValid = false;
+            });
+            
+            // Check terms checkbox
+            if (!document.getElementById('terms').checked) isValid = false;
+            
+            // Check password match
+            if (passwordInput.value !== confirmPasswordInput.value) isValid = false;
+            
+            // Update button state
+            submitButton.disabled = !isValid;
+        }
+
+        // Add event listeners for form validation
+        document.getElementById('full-name').addEventListener('input', checkFormValidity);
+        document.getElementById('email').addEventListener('input', checkFormValidity);
+        document.getElementById('terms').addEventListener('change', checkFormValidity);
+
+        // Form submission
+        document.getElementById('registration-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitButton = document.getElementById('register-btn');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Creating account...';
+            
+            // Simulate API call (replace with actual fetch/axios call)
+            setTimeout(() => {
+                console.log('Form submitted with data:', {
+                    name: document.getElementById('full-name').value,
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value,
+                    learningPreference: document.querySelector('input[name="learning-pref"]:checked').value
+                });
+                
+                // Show success message
+                alert('Account created successfully! Redirecting to dashboard...');
+                
+                // Reset form and button
+                this.reset();
+                submitButton.disabled = false;
+                submitButton.textContent = 'Create Account';
+                
+                // In a real app, you would redirect here
+                // window.location.href = 'dashboard.html';
+            }, 1500);
+        });
+    </script>
+</body>
+</html>
