@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Companion | NeuroLearn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Chat animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-message {
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        /* Voice recording animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .recording {
+            animation: pulse 1.5s infinite;
+            color: #ef4444;
+        }
+        
+        /* Typing indicator */
+        .typing span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #9ca3af;
+            margin: 0 1px;
+        }
+        .typing span:nth-child(1) {
+            animation: bounce 1s infinite;
+        }
+        .typing span:nth-child(2) {
+            animation: bounce 1s 0.2s infinite;
+        }
+        .typing span:nth-child(3) {
+            animation: bounce 1s 0.4s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        
+        /* Tone selector */
+        .tone-option.active {
+            border: 2px solid #4f46e5;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <span class="text-indigo-600 text-xl font-bold mr-8">NeuroLearn</span>
+                    <div class="hidden md:flex items-center space-x-1 text-sm">
+                        <a href="dashboard.html" class="px-3 py-1 rounded-lg hover:bg-gray-100">Dashboard</a>
+                        <a href="courses.html" class="px-3 py-1 rounded-lg hover:bg-gray-100">Courses</a>
+                        <a href="#" class="px-3 py-1 rounded-lg bg-indigo-50 text-indigo-700">AI Companion</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div class="bg-yellow-100 px-3 py-1 rounded-full text-xs font-medium text-yellow-800 flex items-center">
+                            <i class="fas fa-bolt mr-1"></i>
+                            <span>2,450 XP</span>
+                        </div>
+                    </div>
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="h-8 w-8 rounded-full">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Main Chat Interface -->
+            <div class="lg:w-2/3">
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden h-full flex flex-col">
+                    <!-- Chat Header -->
+                    <div class="border-b p-4 bg-indigo-600 text-white flex justify-between items-center">
+                        <div class="flex items-center">
+                            <div class="bg-white p-2 rounded-full mr-3 text-indigo-600">
+                                <i class="fas fa-robot text-xl"></i>
+                            </div>
+                            <div>
+                                <h2 class="font-bold">Neuro AI Companion</h2>
+                                <p class="text-xs opacity-80" id="ai-status">Online - Professional tone</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2" id="tone-selector">
+                            <button class="tone-option p-2 bg-white bg-opacity-20 rounded-full text-xs hover:bg-opacity-30 active" data-tone="professional">
+                                <i class="fas fa-user-tie mr-1"></i>Professional
+                            </button>
+                            <button class="tone-option p-2 bg-white bg-opacity-20 rounded-full text-xs hover:bg-opacity-30" data-tone="friendly">
+                                <i class="fas fa-smile mr-1"></i>Friendly
+                            </button>
+                            <button class="tone-option p-2 bg-white bg-opacity-20 rounded-full text-xs hover:bg-opacity-30" data-tone="humorous">
+                                <i class="fas fa-laugh-squint mr-1"></i>Humorous
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Messages -->
+                    <div class="flex-1 p-4 overflow-y-auto" id="chat-messages" style="max-height: 500px;">
+                        <!-- AI Welcome Message -->
+                        <div class="chat-message mb-4 flex items-start">
+                            <div class="bg-indigo-100 p-3 rounded-full mr-3">
+                                <i class="fas fa-robot text-indigo-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-indigo-50 rounded-lg p-4 inline-block">
+                                    <p>Hello Sarah! I'm your AI learning companion. How can I help you today?</p>
+                                    <p class="mt-2">We can:</p>
+                                    <ul class="list-disc pl-5 space-y-1 mt-1">
+                                        <li>Review your last lesson</li>
+                                        <li>Explain concepts differently</li>
+                                        <li>Try practice questions</li>
+                                        <li>Or just chat about your progress!</li>
+                                    </ul>
+                                    <div class="mt-3 flex flex-wrap gap-2">
+                                        <button class="quick-action text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg">Explain Again</button>
+                                        <button class="quick-action text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg">Give Me a Challenge</button>
+                                        <button class="quick-action text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg">Show Related Project</button>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Today at 10:42 AM</p>
+                            </div>
+                        </div>
+                        
+                        <!-- User Message -->
+                        <div class="chat-message mb-4 flex items-start justify-end">
+                            <div class="flex-1 text-right">
+                                <div class="bg-indigo-600 text-white rounded-lg p-4 inline-block">
+                                    <p>Can you briefly explain quantum entanglement again?</p>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Today at 10:43 AM</p>
+                            </div>
+                            <div class="bg-indigo-600 p-3 rounded-full ml-3 text-white">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="h-6 w-6 rounded-full">
+                            </div>
+                        </div>
+                        
+                        <!-- AI Response -->
+                        <div class="chat-message mb-4 flex items-start">
+                            <div class="bg-indigo-100 p-3 rounded-full mr-3">
+                                <i class="fas fa-robot text-indigo-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="bg-indigo-50 rounded-lg p-4 inline-block">
+                                    <p>Certainly! Quantum entanglement is when particles become linked so that the state of one instantly affects the other, no matter how far apart they are. Einstein called it "spooky action at a distance."</p>
+                                    <div class="mt-3">
+                                        <div class="flex items-start bg-blue-50 p-3 rounded-lg mb-2">
+                                            <div class="bg-blue-100 p-2 rounded-lg mr-3">
+                                                <i class="fas fa-lightbulb text-blue-600"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium">Real-world example:</p>
+                                                <p class="text-sm">This is used in quantum computing for ultra-secure communication.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 flex flex-wrap gap-2">
+                                        <button class="quick-action text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg">Show Diagram</button>
+                                        <button class="quick-action text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg">Watch Video</button>
+                                        <button class="quick-action text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg">Try Simulation</button>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-1">Today at 10:43 AM</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Typing Indicator -->
+                        <div class="chat-message mb-4 flex items-start hidden" id="typing-indicator">
+                            <div class="bg-indigo-100 p-3 rounded-full mr-3">
+                                <i class="fas fa-robot text-indigo-600"></i>
+                            </div>
+                            <div class="bg-indigo-50 rounded-lg p-3 inline-block">
+                                <div class="typing">
+                                    <span></span>
+                                    <span></span>
+                                    <span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Input Area -->
+                    <div class="border-t p-4 bg-gray-50">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <button class="p-2 text-gray-500 hover:text-indigo-600 rounded-full hover:bg-gray-100">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <button class="p-2 text-gray-500 hover:text-indigo-600 rounded-full hover:bg-gray-100">
+                                <i class="fas fa-paperclip"></i>
+                            </button>
+                            <div class="flex-1"></div>
+                            <div class="flex items-center text-xs text-gray-500 space-x-2">
+                                <span>Current tone:</span>
+                                <span class="font-medium text-indigo-600" id="current-tone">Professional</span>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <textarea id="chat-input" rows="2" 
+                                      class="w-full px-4 py-3 pr-12 text-sm border rounded-lg focus:ring-indigo-500 focus:border-indigo-500" 
+                                      placeholder="Message your AI companion..."></textarea>
+                            <div class="absolute right-2 bottom-2 flex space-x-1">
+                                <button class="p-2 text-gray-500 hover:text-indigo-600 rounded-full" id="voice-btn">
+                                    <i class="fas fa-microphone"></i>
+                                </button>
+                                <button class="p-2 bg-indigo-600 text-white rounded-full w-10 h-10 flex items-center justify-center" id="send-btn">
+                                    <i class="fas fa-paper-plane text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="mt-2 flex flex-wrap gap-1">
+                            <button class="quick-action text-xs bg-gray-100 px-3 py-1 rounded-lg">Bored - need a change</button>
+                            <button class="quick-action text-xs bg-gray-100 px-3 py-1 rounded-lg">Show related lesson</button>
+                            <button class="quick-action text-xs bg-gray-100 px-3 py-1 rounded-lg">Give me a quiz</button>
+                            <button class="quick-action text-xs bg-gray-100 px-3 py-1 rounded-lg">I'm stuck!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Sidebar -->
+            <div class="lg:w-1/3 space-y-4">
+                <!-- Learning Context -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="font-bold text-lg mb-4">Current Learning Context</h3>
+                    <div class="flex items-start mb-4">
+                        <div class="bg-indigo-100 p-3 rounded-lg mr-3 flex-shrink-0">
+                            <i class="fas fa-book text-indigo-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-medium">Quantum Physics</h4>
+                            <p class="text-sm text-gray-600">Module: Advanced Concepts</p>
+                            <div class="mt-2 w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="bg-indigo-600 h-1.5 rounded-full" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-indigo-50 p-4 rounded-lg">
+                        <div class="flex items-start">
+                            <div class="bg-indigo-100 p-2 rounded-lg mr-3">
+                                <i class="fas fa-info-circle text-indigo-600"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm text-gray-700">Your AI will adjust explanations based on your current lesson.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="font-bold text-lg mb-4">Quick Actions</h3>
+                    <div class="grid grid-cols-2 gap-3">
+                        <button class="p-3 bg-indigo-100 rounded-lg flex flex-col items-center justify-center hover:bg-indigo-200 transition">
+                            <i class="fas fa-redo text-indigo-600 text-xl mb-2"></i>
+                            <span class="text-sm">Explain Again</span>
+                        </button>
+                        <button class="p-3 bg-green-100 rounded-lg flex flex-col items-center justify-center hover:bg-green-200 transition">
+                            <i class="fas fa-trophy text-green-600 text-xl mb-2"></i>
+                            <span class="text-sm">Challenge Me</span>
+                        </button>
+                        <button class="p-3 bg-blue-100 rounded-lg flex flex-col items-center justify-center hover:bg-blue-200 transition">
+                            <i class="fas fa-project-diagram text-blue-600 text-xl mb-2"></i>
+                            <span class="text-sm">Related Project</span>
+                        </button>
+                        <button class="p-3 bg-yellow-100 rounded-lg flex flex-col items-center justify-center hover:bg-yellow-200 transition">
+                            <i class="fas fa-street-view text-yellow-600 text-xl mb-2"></i>
+                            <span class="text-sm">Change Tone</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Recent Concepts -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="font-bold text-lg mb-4">Recent Concepts</h3>
+                    <div class="space-y-3">
+                        <button class="w-full text-left p-2 hover:bg-gray-50 rounded-lg">
+                            <p class="font-medium">Wave-Particle Duality</p>
+                            <p class="text-sm text-gray-600">Quantum Physics • 2 days ago</p>
+                        </button>
+                        <button class="w-full text-left p-2 hover:bg-gray-50 rounded-lg">
+                            <p class="font-medium">Heisenberg Principle</p>
+                            <p class="text-sm text-gray-600">Quantum Physics • 3 days ago</p>
+                        </button>
+                        <button class="w-full text-left p-2 hover:bg-gray-50 rounded-lg">
+                            <p class="font-medium">Promise in JavaScript</p>
+                            <p class="text-sm text-gray-600">Advanced JS • 5 days ago</p>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+     <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <script>
+      async function setupWebcamAndEmotionDetection() {
+        const videoEl = document.createElement("video");
+        videoEl.setAttribute("autoplay", true);
+        videoEl.setAttribute("playsinline", true);
+        videoEl.setAttribute("muted", true);
+        videoEl.width = 64;
+        videoEl.height = 64;
+        videoEl.style.display = "none";
+        document.body.appendChild(videoEl);
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          videoEl.srcObject = stream;
+        } catch (err) {
+          console.error("Webcam access denied:", err);
+          return;
+        }
+
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri("https://cdn.jsdelivr.net/npm/face-api.js/weights"),
+          faceapi.nets.faceExpressionNet.loadFromUri("https://cdn.jsdelivr.net/npm/face-api.js/weights")
+        ]);
+
+        videoEl.addEventListener("play", () => {
+          const interval = setInterval(async () => {
+            const detections = await faceapi
+              .detectAllFaces(videoEl, new faceapi.TinyFaceDetectorOptions())
+              .withFaceExpressions();
+
+            if (detections.length > 0) {
+              const expressions = detections[0].expressions;
+              const emotion = Object.keys(expressions).reduce((a, b) =>
+                expressions[a] > expressions[b] ? a : b
+              );
+
+              const indicator = document.getElementById("engagement-indicator");
+              const text = document.getElementById("engagement-text");
+
+              if (indicator && text) {
+                if (["sad", "neutral", "angry"].includes(emotion)) {
+                  indicator.classList.remove("bg-green-500");
+                  indicator.classList.add("bg-red-500");
+                  text.innerText = "You seem distracted. Try a quiz!";
+                  const quizBtn = document.getElementById("quiz-btn");
+                  if (quizBtn) quizBtn.classList.add("animate-pulse");
+                } else {
+                  indicator.classList.remove("bg-red-500");
+                  indicator.classList.add("bg-green-500");
+                  text.innerText = "You seem engaged!";
+                  const quizBtn = document.getElementById("quiz-btn");
+                  if (quizBtn) quizBtn.classList.remove("animate-pulse");
+                }
+              }
+            }
+          }, 5000);
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", setupWebcamAndEmotionDetection);
+    </script>
+
+    <script>
+      // Basic AI Companion Chat Interaction
+      document.addEventListener("DOMContentLoaded", () => {
+        const chatInput = document.getElementById("chat-input");
+        const sendBtn = document.getElementById("send-btn");
+        const chatBox = document.getElementById("chat-messages");
+
+        function appendMessage(sender, text) {
+          const msg = document.createElement("div");
+          msg.classList.add("chat-message", "mb-4", "flex", "items-start");
+
+          if (sender === "user") {
+            msg.classList.add("justify-end");
+            msg.innerHTML = `
+              <div class="flex-1 text-right">
+                <div class="bg-indigo-600 text-white rounded-lg p-4 inline-block">
+                  <p>${text}</p>
+                </div>
+              </div>
+              <div class="bg-indigo-600 p-3 rounded-full ml-3 text-white">
+                <i class="fas fa-user"></i>
+              </div>
+            `;
+          } else {
+            msg.innerHTML = `
+              <div class="bg-indigo-100 p-3 rounded-full mr-3">
+                <i class="fas fa-robot text-indigo-600"></i>
+              </div>
+              <div class="flex-1">
+                <div class="bg-indigo-50 rounded-lg p-4 inline-block">
+                  <p>${text}</p>
+                </div>
+              </div>
+            `;
+          }
+
+          chatBox.appendChild(msg);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function handleSend() {
+          const message = chatInput.value.trim();
+          if (!message) return;
+          appendMessage("user", message);
+          chatInput.value = "";
+
+          setTimeout(() => {
+            appendMessage("ai", `Let me think about "${message}"...`);
+          }, 1000);
+        }
+
+        sendBtn.addEventListener("click", handleSend);
+
+        chatInput.addEventListener("keypress", (e) => {
+          if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            handleSend();
+          }
+        });
+      });
+    </script>
