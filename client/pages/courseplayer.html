@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Player | NeuroLearn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+         .emotion-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 9999px;
+    display: inline-block;
+}
+        .avatar-reaction {
+    animation: fadeIn 0.5s;
+}
+        /* Emotion detection indicator */
+        .engagement-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            position: relative;
+        }
+        .engagement-indicator::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            70% { transform: scale(2.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 0; }
+        }
+        
+        /* Note-taking panel */
+        .note-panel {
+            transition: transform 0.3s ease;
+        }
+        .note-panel.collapsed {
+            transform: translateX(100%);
+        }
+        
+        /* Engagement widgets */
+        .engagement-widget {
+            transition: all 0.2s ease;
+        }
+        .engagement-widget:hover {
+            transform: scale(1.05);
+        }
+        
+        /* Picture-in-picture mode */
+        .pip-mode {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 300px;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* AI avatar reactions */
+        .avatar-reaction {
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <span class="text-indigo-600 text-xl font-bold mr-8">NeuroLearn</span>
+                    <div class="hidden md:flex items-center space-x-1 text-sm">
+                        <a href="dashboard.html" class="px-3 py-1 rounded-lg hover:bg-gray-100">Dashboard</a>
+                        <a href="courses.html" class="px-3 py-1 rounded-lg hover:bg-gray-100">Courses</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div class="bg-yellow-100 px-3 py-1 rounded-full text-xs font-medium text-yellow-800 flex items-center">
+                            <i class="fas fa-bolt mr-1"></i>
+                            <span>2,450 XP</span>
+                        </div>
+                    </div>
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User " class="h-8 w-8 rounded-full">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex flex-col lg:flex-row gap-6">
+            <!-- Main Video Content -->
+            <div class="lg:w-2/3">
+                <!-- Video Player Container -->
+                <div class="bg-black rounded-xl overflow-hidden shadow-lg mb-4 relative" id="video-container">
+                    <!-- Video Placeholder -->
+                    <div class="aspect-w-16 aspect-h-9 bg-gray-800 flex items-center justify-center">
+                        <video id="video-player" class="w-full h-full" controls>
+                            <source src="../images/video.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                    
+                    <!-- Emotion Detection Indicator -->
+                    <div class="absolute top-4 right-4 bg-white bg-opacity-90 rounded-full px-3 py-1 flex items-center text-xs">
+                        <div class="engagement-indicator bg-green-500 mr-2" id="engagement-indicator">
+                            <div class="engagement-level bg-green-500 absolute inset-0 rounded-full"></div>
+                        </div>
+                        <span id="engagement-text">Analyzing engagement</span>
+                    </div>
+                    
+                    <!-- Webcam Feed (Mini) -->
+                    <div class="absolute bottom-4 right-4 w-16 h-16 rounded-full border-2 border-white overflow-hidden bg-gray-700 flex items-center justify-center cursor-pointer" id="webcam-feed">
+                        <i class="fas fa-user text-white text-xl"></i>
+                    </div>
+                    
+                    <!-- AI Avatar -->
+                    <div class="absolute bottom-4 left-4 w-12 h-12 rounded-full bg-indigo-600 flex items-center justify-center cursor-pointer" id="ai-avatar">
+                        <i class="fas fa-robot text-white text-xl"></i>
+                    </div>
+                    
+                    <!-- Video Controls -->
+                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4 opacity-0 hover:opacity-100 transition-opacity" id="video-controls">
+                        <div class="flex items-center justify-between text-white">
+                            <button class="p-2 hover:bg-white hover:bg-opacity-20 rounded-full" id="play-pause-btn">
+                                <i class="fas fa-play" id="play-icon"></i>
+                            </button>
+                            <div class="flex-1 mx-4">
+                                <div class="h-1 bg-gray-600 rounded-full overflow-hidden">
+                                    <div class="h-full bg-indigo-500" style="width: 35%" id="progress-bar"></div>
+                                </div>
+                            </div>
+                            <div class="text-xs" id="time-display">12:45 / 36:20</div>
+                            <button class="p-2 hover:bg-white hover:bg-opacity-20 rounded-full" id="volume-btn">
+                                <i class="fas fa-volume-up" id="volume-icon"></i>
+                            </button>
+                            <button class="p-2 hover:bg-white hover:bg-opacity-20 rounded-full" id="pip-btn">
+                                <i class="fas fa-expand"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Engagement Widgets -->
+                <div class="flex flex-wrap gap-2 mb-6">
+                    <button class="engagement-widget px-3 py-1 bg-indigo-100 rounded-full text-xs font-medium flex items-center" id="recap-btn">
+                        <i class="fas fa-brain mr-1 text-indigo-600"></i>
+                        <span>Feeling Lost?</span>
+                    </button>
+                    <button class="engagement-widget px-3 py-1 bg-blue-100 rounded-full text-xs font-medium flex items-center" id="pause-reflect-btn">
+                        <i class="fas fa-hand-paper mr-1 text-blue-600"></i>
+                        <span>Pause & Reflect</span>
+                    </button>
+                    <button class="engagement-widget px-3 py-1 bg-purple-100 rounded-full text-xs font-medium flex items-center" id="quiz-btn">
+                        <i class="fas fa-question mr-1 text-purple-600"></i>
+                        <span>Quick Quiz</span>
+                    </button>
+                    <button class="engagement-widget px-3 py-1 bg-green-100 rounded-full text-xs font-medium flex items-center" id="feedback-btn">
+                        <i class="fas fa-thumbs-up mr-1 text-green-600"></i>
+                        <span>Give Feedback</span>
+                    </button>
+                </div>
+                
+                <!-- Lesson Info -->
+                <div class="bg-white rounded-lg shadow-sm p-6 mb-4">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <h1 class="text-2xl font-bold">Quantum Entanglement Explained</h1>
+                            <p class="text-gray-600">Lesson 12 of <span class="font-medium">Quantum Physics</span></p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg flex items-center">
+                                <i class="fas fa-arrow-right mr-2"></i> Next Lesson
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Engagement Analysis -->
+                    <div class="bg-indigo-50 p-4 rounded-lg mb-6" id="ai-feedback">
+                        <div class="flex items-start">
+                            <div class="bg-indigo-100 p-2 rounded-lg mr-3">
+                                <i class="fas fa-robot text-indigo-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-900 mb-1">I notice you seem engaged!</h4>
+                                <p class="text-sm text-gray-700">Would you like to try a pop quiz to reinforce this concept?</p>
+                                <div class="flex space-x-2 mt-2">
+                                    <button class="text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg" id="quiz-yes-btn">Sure!</button>
+                                    <button class="text-xs bg-white text-gray-700 px-3 py-1 rounded-lg border" id="quiz-later-btn">Later</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Transcript Navigation -->
+                    <div class="mb-6">
+                        <h3 class="font-medium mb-2">Your Engagement Highlights</h3>
+                        <div class="flex overflow-x-auto pb-2">
+                            <div class="flex space-x-1">
+                                <span class="emotion-dot bg-green-500"></span>
+                                <span class="emotion-dot bg-yellow-500"></span>
+                                <span class="emotion-dot bg-green-500"></span>
+                                <span class="emotion-dot bg-green-500"></span>
+                                <span class="emotion-dot bg-red-500"></span>
+                                <span class="emotion-dot bg-green-500"></span>
+                                <span class="emotion-dot bg-blue-500"></span>
+                                <span class="emotion-dot bg-green-500"></span>
+                                <span class="emotion-dot bg-green-500"></span>
+                                <span class="emotion-dot bg-yellow-500"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Note-taking Panel (Toggleable) -->
+                    <div class="border-t pt-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <h3 class="font-medium">Notes</h3>
+                            
+                        </div>
+                        <div id="notes-panel">
+                            <textarea class="w-full border rounded-lg p-3 mb-2 h-32" placeholder="Add your notes here..."></textarea>
+                            <div class="flex justify-between">
+                                <div class="flex space-x-2">
+                                    <button class="text-xs bg-gray-100 px-3 py-1 rounded-lg">Save</button>
+                                    <button class="text-xs bg-gray-100 px-3 py-1 rounded-lg">Add Timestamp</button>
+                                </div>
+                                <button class="text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg">Share</button>
+                            </div>
+                            
+                            <div class="mt-4 space-y-3">
+                                <div class="p-3 bg-gray-50 rounded-lg border">
+                                    <div class="flex justify-between text-sm text-gray-500 mb-1">
+                                        <span>4:22</span>
+                                        <span><i class="fas fa-bookmark text-indigo-500"></i></span>
+                                    </div>
+                                    <p>Quantum entanglement occurs when particles interact...</p>
+                                </div>
+                                <div class="p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+                                    <div class="flex justify-between text-sm text-gray-500 mb-1">
+                                        <span>8:45</span>
+                                        <span><i class="fas fa-lightbulb text-yellow-500"></i></span>
+                                    </div>
+                                    <p>Einstein called this "spooky action at a distance"</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Sidebar -->
+            <div class="lg:w-1/3 space-y-4">
+                <!-- Course Outline -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="font-bold text-lg mb-4">Course Outline</h3>
+                    <div class="space-y-3">
+                        <!-- Module 1 -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium">Module 1: Quantum Basics</h4>
+                                <span class="text-xs bg-gray-100 px-2 py-1 rounded">Completed</span>
+                            </div>
+                            <div class="ml-4 space-y-2">
+                                <a href="#" class="flex items-center justify-between text-sm hover:text-indigo-600">
+                                    <span class="flex items-center">
+                                        <i class="fas fa-play-circle text-indigo-500 mr-2"></i>
+                                        Wave-Particle Duality
+                                    </span>
+                                    <span class="text-gray-500">12 min</span>
+                                </a>
+                                <a href="#" class="flex items-center justify-between text-sm hover:text-indigo-600">
+                                    <span class="flex items-center">
+                                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                        Heisenberg Principle
+                                    </span>
+                                    <span class="text-gray-500">18 min</span>
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Module 2 (Current) -->
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <h4 class="font-medium">Module 2: Advanced Concepts</h4>
+                                <span class="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">In Progress</span>
+                            </div>
+                            <div class="ml-4 space-y-2">
+                                <a href="#" class="flex items-center justify-between text-sm text-indigo-600 font-medium">
+                                    <span class="flex items-center">
+                                        <i class="fas fa-play-circle text-indigo-500 mr-2 animate-pulse"></i>
+                                        Quantum Entanglement
+                                    </span>
+                                    <span class="text-gray-500">36 min</span>
+                                </a>
+                                <a href="#" class="flex items-center justify-between text-sm hover:text-indigo-600">
+                                    <span class="flex items-center">
+                                        <i class="far fa-play-circle text-gray-400 mr-2"></i>
+                                        Quantum Computing Basics
+                                    </span>
+                                    <span class="text-gray-500">22 min</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recommended Resources -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="font-bold text-lg mb-4">Enhance Your Learning</h3>
+                    <div class="space-y-3">
+                        <a href="#" class="flex items-start hover:bg-gray-50 p-2 rounded-lg">
+                            <div class="bg-indigo-100 p-3 rounded-lg mr-3">
+                                <i class="fas fa-book-open text-indigo-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Supplemental Reading</h4>
+                                <p class="text-sm text-gray-600">"Entanglement Explained" by N. Bohr</p>
+                            </div>
+                        </a>
+                        <a href="#" class="flex items-start hover:bg-gray-50 p-2 rounded-lg">
+                            <div class="bg-blue-100 p-3 rounded-lg mr-3">
+                                <i class="fas fa-video text-blue-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Alternative Explanation</h4>
+                                <p class="text-sm text-gray-600">Visual demonstration of entanglement</p>
+                            </div>
+                        </a>
+                        <a href="#" class="flex items-start hover:bg-gray-50 p-2 rounded-lg">
+                            <div class="bg-green-100 p-3 rounded-lg mr-3">
+                                <i class="fas fa-flask text-green-600"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium">Hands-on Activity</h4>
+                                <p class="text-sm text-gray-600">Simulate quantum states</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Community Questions -->
+                <div class="bg-white rounded-lg shadow-sm p-6">
+                    <h3 class="font-bold text-lg mb-4">Community Q&A</h3>
+                    <div class="space-y-3">
+                        <div class="border-b pb-3">
+                            <div class="text-sm text-gray-600 mb-1">Asked by James L.</div>
+                            <p class="font-medium mb-2">How does measurement affect entangled particles?</p>
+                            <div class="text-xs text-indigo-600">3 answers <span class="text-gray-400 mx-1">•</span> Last answer 2h ago</div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-600 mb-1">Asked by Maria G.</div>
+                            <p class="font-medium mb-2">Can entangled particles communicate faster than light?</p>
+                            <div class="text-xs text-indigo-600">
+
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <script>
+      async function setupWebcamAndEmotionDetection() {
+        const videoEl = document.createElement("video");
+        videoEl.setAttribute("autoplay", true);
+        videoEl.setAttribute("playsinline", true);
+        videoEl.setAttribute("muted", true);
+        videoEl.width = 64;
+        videoEl.height = 64;
+        videoEl.style.display = "none";
+        document.body.appendChild(videoEl);
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          videoEl.srcObject = stream;
+        } catch (err) {
+          console.error("Webcam access denied:", err);
+          return;
+        }
+
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri("https://cdn.jsdelivr.net/npm/face-api.js/weights"),
+          faceapi.nets.faceExpressionNet.loadFromUri("https://cdn.jsdelivr.net/npm/face-api.js/weights")
+        ]);
+
+        videoEl.addEventListener("play", () => {
+          const interval = setInterval(async () => {
+            const detections = await faceapi
+              .detectAllFaces(videoEl, new faceapi.TinyFaceDetectorOptions())
+              .withFaceExpressions();
+
+            if (detections.length > 0) {
+              const expressions = detections[0].expressions;
+              const emotion = Object.keys(expressions).reduce((a, b) =>
+                expressions[a] > expressions[b] ? a : b
+              );
+
+              const indicator = document.getElementById("engagement-indicator");
+              const text = document.getElementById("engagement-text");
+
+              if (["sad", "neutral", "angry"].includes(emotion)) {
+                indicator.classList.remove("bg-green-500");
+                indicator.classList.add("bg-red-500");
+                text.innerText = "You seem distracted. Try a quiz!";
+                document.getElementById("quiz-btn").classList.add("animate-pulse");
+              } else {
+                indicator.classList.remove("bg-red-500");
+                indicator.classList.add("bg-green-500");
+                text.innerText = "You seem engaged!";
+                document.getElementById("quiz-btn").classList.remove("animate-pulse");
+              }
+            }
+          }, 5000);
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", setupWebcamAndEmotionDetection);
+
+
+      
+    </script>
