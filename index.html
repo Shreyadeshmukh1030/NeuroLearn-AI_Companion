@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroLearn - AI-Powered Learning</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .hero-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .feature-card {
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .glow {
+            box-shadow: 0 0 20px rgba(79, 70, 229, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm fixed w-full z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center">
+                    <img src="./../images/logo.png" alt="NeuroLearn Logo" class="h-12 w-12 mr-2">
+                    <span class="text-indigo-600 text-2xl font-bold">NeuroLearn</span>
+                </div>
+                <div class="space-x-4">
+                    <a href="register.html" class="bg-indigo-600 text-white px-6 py-2 rounded-full transition hover:bg-indigo-700 font-medium">Sign Up</a>
+                    <a href="login.html" class="bg-indigo-600 text-white px-6 py-2 rounded-full transition hover:bg-indigo-700 font-medium">Login</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-gradient text-white pt-32 pb-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-5xl font-bold mb-6 leading-tight">Learn Smarter with <span class="text-yellow-300">AI</span></h1>
+                    <p class="text-xl mb-8 opacity-90">Your personal learning companion adapts to your emotions, pace, and style for maximum engagement.</p>
+                    <div class="flex space-x-4">
+                        <a href="signup.html" class="bg-white text-indigo-600 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition flex items-center">
+                            Get Started <i class="fas fa-arrow-right ml-2"></i>
+                        </a>
+                        <a href="#" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:bg-opacity-10 transition flex items-center">
+                            <i class="fas fa-play-circle mr-2"></i> Watch Demo
+                        </a>
+                    </div>
+                </div>
+                <div class="relative">
+                    <img src="./../images/landing_image.png" 
+                         alt="AI Learning" 
+                         class="rounded-xl shadow-2xl floating border-4 border-white">
+                    <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-xl shadow-lg">
+                        <div class="flex items-center">
+                            <div class="bg-indigo-100 p-3 rounded-full mr-3">
+                                <i class="fas fa-brain text-indigo-600 text-xl"></i>
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-800">Emotion Detection</p>
+                                <p class="text-sm text-gray-600">Active</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">How NeuroLearn Works</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Our AI-powered platform adapts to your learning style in real-time for maximum retention</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Feature 1 -->
+                <div class="feature-card p-8 rounded-2xl text-center">
+                    <div class="bg-indigo-100 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2936/2936886.png" alt="Emotion Detection" class="h-10 w-10">
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-3">Emotion Detection</h3>
+                    <p class="text-gray-600">Our AI analyzes your facial expressions to detect engagement levels and adjust content accordingly.</p>
+                </div>
+                
+                <!-- Feature 2 -->
+                <div class="feature-card p-8 rounded-2xl text-center">
+                    <div class="bg-purple-100 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6">
+                        <img src="https://cdn-icons-png.flaticon.com/512/808/808439.png" alt="Gamification" class="h-10 w-10">
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-3">Gamified Learning</h3>
+                    <p class="text-gray-600">Earn points, badges, and compete on leaderboards to stay motivated throughout your learning journey.</p>
+                </div>
+                
+                <!-- Feature 3 -->
+                <div class="feature-card p-8 rounded-2xl text-center">
+                    <div class="bg-green-100 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-6">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" alt="Activities" class="h-10 w-10">
+                    </div>
+                    <h3 class="text-2xl font-semibold mb-3">Hands-on Activities</h3>
+                    <p class="text-gray-600">Reinforce concepts with interactive exercises and real-world projects tailored to your progress.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 bg-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-indigo-600 rounded-3xl p-12 text-center text-white relative overflow-hidden">
+                <div class="absolute -top-20 -right-20 w-64 h-64 bg-indigo-500 rounded-full opacity-20"></div>
+                <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-500 rounded-full opacity-20"></div>
+                
+                <h2 class="text-4xl font-bold mb-6 relative z-10">Ready to Transform Your Learning?</h2>
+                <p class="text-xl mb-8 max-w-2xl mx-auto relative z-10">Join thousands of learners who are achieving more with NeuroLearn's AI-powered platform.</p>
+                <div class="flex justify-center space-x-4 relative z-10">
+                    <a href="signup.html" class="bg-white text-indigo-600 px-8 py-3 rounded-full font-bold hover:bg-gray-100 transition">Start Free Trial</a>
+                    <a href="#" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:bg-opacity-10 transition">See Pricing</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">What Our Learners Say</h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">Hear from students who transformed their learning experience</p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="bg-gray-50 p-8 rounded-2xl">
+                    <div class="flex items-center mb-6">
+                        <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Sarah" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Sarah Johnson</h4>
+                            <p class="text-indigo-600">Computer Science Student</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"NeuroLearn's emotion detection helped me stay focused during long study sessions. The AI adapts perfectly to my learning style."</p>
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 2 -->
+                <div class="bg-gray-50 p-8 rounded-2xl">
+                    <div class="flex items-center mb-6">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="David" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">David Chen</h4>
+                            <p class="text-indigo-600">Medical Student</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"The gamification elements make studying addictive! I've never been this engaged with my coursework before."</p>
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                
+                <!-- Testimonial 3 -->
+                <div class="bg-gray-50 p-8 rounded-2xl">
+                    <div class="flex items-center mb-6">
+                        <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Maria" class="w-12 h-12 rounded-full mr-4">
+                        <div>
+                            <h4 class="font-bold">Maria Garcia</h4>
+                            <p class="text-indigo-600">Language Learner</p>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mb-4">"The hands-on activities are perfectly timed based on my engagement levels. I'm learning Spanish twice as fast now!"</p>
+                    <div class="flex text-yellow-400">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star-half-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <div class="flex items-center mb-4">
+                        <img src="https://cdn-icons-png.flaticon.com/512/3271/3271481.png" alt="NeuroLearn Logo" class="h-8 w-8 mr-2">
+                        <span class="text-2xl font-bold">NeuroLearn</span>
+                    </div>
+                    <p class="text-gray-400 mb-4">Making learning adaptive, engaging, and fun with AI.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Product</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Features</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Pricing</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Case Studies</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Resources</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white">Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Help Center</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white">Webinars</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 mb-4 md:mb-0">© 2023 NeuroLearn. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-white">Privacy Policy</a>
+                    <a href="#" class="text-gray-400 hover:text-white">Terms of Service</a>
+                    <a href="#" class="text-gray-400 hover:text-white">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
