@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile Settings | NeuroLearn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Theme transition */
+        .theme-transition {
+            transition: background-color 0.5s ease, color 0.3s ease;
+        }
+        
+        /* Avatar editor */
+        .avatar-editor {
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-overlay {
+            transition: all 0.3s ease;
+            opacity: 0;
+        }
+        .avatar-editor:hover .avatar-overlay {
+            opacity: 1;
+        }
+        .avatar-options {
+            transition: all 0.3s ease;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+        .avatar-editor:hover .avatar-options {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        /* Tone selector */
+        .tone-card {
+            transition: all 0.3s ease;
+        }
+        .tone-card.active {
+            border: 2px solid #4f46e5;
+            background-color: #eef2ff;
+        }
+        .tone-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        /* Learning mode toggle */
+        .mode-toggle {
+            position: relative;
+            display: inline-block;
+        }
+        .mode-toggle-checkbox {
+            opacity: 0;
+            position: absolute;
+        }
+        .mode-toggle-label {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .mode-toggle-switch {
+            width: 60px;
+            height: 30px;
+            background: #e2e8f0;
+            border-radius: 15px;
+            position: relative;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+        .mode-toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: #ffffff;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .mode-toggle-checkbox:checked + .mode-toggle-label .mode-toggle-switch {
+            background: #4f46e5;
+        }
+        .mode-toggle-checkbox:checked + .mode-toggle-label .mode-toggle-switch::after {
+            transform: translateX(30px);
+        }
+        
+        /* Focus mode preview */
+        .focus-preview {
+            transition: all 0.5s ease;
+        }
+        .focus-preview.active {
+            background-color: #1e293b;
+        }
+        .focus-preview.active .focus-text {
+            color: #f8fafc;
+        }
+        .focus-preview.active .focus-element {
+            opacity: 0.3;
+        }
+        .focus-preview.active .focus-main {
+            opacity: 1;
+            border: 1px solid #4f46e5;
+        }
+        
+        /* Settings card animations */
+        .settings-card {
+            transition: all 0.3s ease;
+        }
+        .settings-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans theme-transition">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm theme-transition">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <span class="text-indigo-600 text-xl font-bold mr-8">NeuroLearn</span>
+                    <div class="hidden md:flex items-center space-x-1 text-sm">
+                        <a href="dashboard.html" class="px-3 py-1 rounded-lg hover:bg-gray-100">Dashboard</a>
+                        <a href="courses.html" class="px-3 py-1 rounded-lg hover:bg-gray-100">Courses</a>
+                        <a href="#" class="px-3 py-1 rounded-lg bg-indigo-50 text-indigo-700">Settings</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div class="bg-yellow-100 px-3 py-1 rounded-full text-xs font-medium text-yellow-800 flex items-center">
+                            <i class="fas fa-bolt mr-1"></i>
+                            <span>2,450 XP</span>
+                        </div>
+                    </div>
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User " class="h-8 w-8 rounded-full">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="flex flex-col lg:flex-row gap-8">
+            <!-- Profile Sidebar -->
+            <div class="lg:w-1/3">
+                <!-- Profile Card -->
+                <div class="bg-white rounded-xl shadow-sm p-6 mb-6 theme-transition settings-card">
+                    <div class="flex flex-col items-center">
+                        <div class="avatar-editor mb-4">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User " 
+                                 class="h-24 w-24 rounded-full object-cover">
+                            <div class="avatar-overlay absolute inset-0 bg-black bg-opacity-30 rounded-full flex items-center justify-center">
+                                <i class="fas fa-camera text-white text-xl"></i>
+                            </div>
+                        </div>
+                        <div class="avatar-options flex space-x-2 mb-4">
+                            <button class="bg-indigo-100 p-2 rounded-lg text-indigo-600 hover:bg-indigo-200">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                            <button class="bg-indigo-100 p-2 rounded-lg text-indigo-600 hover:bg-indigo-200">
+                                <i class="fas fa-tshirt"></i>
+                            </button>
+                            <button class="bg-indigo-100 p-2 rounded-lg text-indigo-600 hover:bg-indigo-200">
+                                <i class="fas fa-palette"></i>
+                            </button>
+                        </div>
+                        <h2 class="text-xl font-bold">Sarah Johnson</h2>
+                        <p class="text-gray-500 mb-4">Intermediate Learner • Level 7</p>
+                        <div class="flex space-x-2">
+                            <span class="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full theme-transition">Active</span>
+                            <span class="px-2 py-1 bg-indigo-100 text-indigo-800 text-xs rounded-full theme-transition">Premium</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 border-t pt-4">
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <div class="bg-gray-100 p-2 rounded-lg mr-3 theme-transition">
+                                    <i class="fas fa-envelope text-gray-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Email</p>
+                                    <p class="text-sm font-medium">sarah@example.com</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="bg-gray-100 p-2 rounded-lg mr-3 theme-transition">
+                                    <i class="fas fa-calendar-alt text-gray-600"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-500">Member since</p>
+                                    <p class="text-sm font-medium">March 2022</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="lg:w-2/3 space-y-6">
+                <!-- Personalization Section -->
+                <div class="bg-white rounded-xl shadow-sm p-6 theme-transition settings-card">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Personalization Settings</h2>
+                    
+                    <!-- Theme Selection -->
+                    <div class="mb-8">
+                        <h3 class="font-medium mb-4">Theme & Appearance</h3>
+                        <div class="grid grid-cols-3 gap-4 mb-4">
+                            <button class="theme-option p-4 border rounded-lg text-center hover:bg-gray-50 theme-transition" 
+                                    data-theme="light">
+                                <div class="bg-gray-100 h-20 rounded mb-2 flex items-center justify-center">
+                                    <i class="fas fa-sun text-yellow-500 text-2xl"></i>
+                                </div>
+                                <span>Light</span>
+                            </button>
+                            <button class="theme-option p-4 border rounded-lg text-center hover:bg-gray-50 theme-transition" 
+                                    data-theme="dark">
+                                <div class="bg-gray-800 h-20 rounded mb-2 flex items-center justify-center">
+                                    <i class="fas fa-moon text-indigo-300 text-2xl"></i>
+                                </div>
+                                <span>Dark</span>
+                            </button>
+                            <button class="theme-option p-4 border rounded-lg text-center hover:bg-gray-50 theme-transition" 
+                                    data-theme="system">
+                                <div class="bg-gradient-to-r from-gray-100 to-gray-800 h-20 rounded mb-2 flex items-center justify-center">
+                                    <i class="fas fa-desktop text-gray-600 text-2xl"></i>
+                                </div>
+                                <span>System</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center">
+                            <input type="checkbox" id="theme-schedule" class="mr-2">
+                            <label for="theme-schedule" class="text-sm">Auto-switch themes at sunset/sunrise</label>
+                        </div>
+                    </div>
+                    
+                    <!-- AI Companion Tone -->
+                    <div class="mb-8">
+                        <h3 class="font-medium mb-4">AI Companion Personality</h3>
+                        <p class="text-sm text-gray-600 mb-4">Select how your AI companion communicates with you:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <button class="tone-card p-4 border rounded-lg text-center theme-transition active" data-tone="professional">
+                                <div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-user-tie text-indigo-600"></i>
+                                </div>
+                                <h4 class="font-medium">Professional</h4>
+                                <p class="text-xs text-gray-500 mt-1">Formal and precise</p>
+                            </button>
+                            <button class="tone-card p-4 border rounded-lg text-center theme-transition" data-tone="friendly">
+                                <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-smile text-blue-600"></i>
+                                </div>
+                                <h4 class="font-medium">Friendly</h4>
+                                <p class="text-xs text-gray-500 mt-1">Warm and encouraging</p>
+                            </button>
+                            <button class="tone-card p-4 border rounded-lg text-center theme-transition" data-tone="humorous">
+                                <div class="bg-yellow-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                                    <i class="fas fa-laugh-squint text-yellow-600"></i>
+                                </div>
+                                <h4 class="font-medium">Humorous</h4>
+                                <p class="text-xs text-gray-500 mt-1">Fun and lighthearted</p>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Learning Modes -->
+                    <div>
+                        <h3 class="font-medium mb-4">Learning Mode Preferences</h3>
+                        <div class="space-y-4">
+                            <!-- Focus Mode -->
+                            <div class="p-4 border rounded-lg focus-preview" id="focus-preview">
+                                <div class="flex justify-between items-center mb-3">
+                                    <div>
+                                        <h4 class="font-medium focus-text">Focus Mode</h4>
+                                        <p class="text-sm text-gray-600 focus-text">Minimize distractions during study sessions</p>
+                                    </div>
+                                    <div class="mode-toggle">
+                                        <input type="checkbox" id="focus-mode" class="mode-toggle-checkbox">
+                                        <label for="focus-mode" class="mode-toggle-label">
+                                            <div class="mode-toggle-switch"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="flex space-x-2">
+                                    <div class="flex-1 p-3 bg-gray-100 rounded-lg focus-element">
+                                        <p class="text-xs font-medium focus-text">Notifications</p>
+                                        <p class="text-xs text-gray-500">Paused</p>
+                                    </div>
+                                    <div class="flex-1 p-3 bg-gray-100 rounded-lg focus-main">
+                                        <p class="text-xs font-medium">Current Lesson</p>
+                                        <p class="text-xs text-gray-500">Highlighted</p>
+                                    </div>
+                                    <div class="flex-1 p-3 bg-gray-100 rounded-lg focus-element">
+                                        <p class="text-xs font-medium focus-text">Navigation</p>
+                                        <p class="text-xs text-gray-500">Minimized</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Speed Mode -->
+                            <div class="p-4 border rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-medium">Adaptive Learning Speed</h4>
+                                        <p class="text-sm text-gray-600">AI adjusts pace based on your engagement</p>
+                                    </div>
+                                    <div class="mode-toggle">
+                                        <input type="checkbox" id="adaptive-speed" class="mode-toggle-checkbox" checked>
+                                        <label for="adaptive-speed" class="mode-toggle-label">
+                                            <div class="mode-toggle-switch"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Multitasking Mode -->
+                            <div class="p-4 border rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <h4 class="font-medium">Multitasking Support</h4>
+                                        <p class="text-sm text-gray-600">Allow video Picture-in-Picture mode</p>
+                                    </div>
+                                    <div class="mode-toggle">
+                                        <input type="checkbox" id="multitasking-mode" class="mode-toggle-checkbox" checked>
+                                        <label for="multitasking-mode" class="mode-toggle-label">
+                                            <div class="mode-toggle-switch"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Learning Analytics -->
+                <div class="bg-white rounded-xl shadow-sm p-6 theme-transition settings-card">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-gray-900">Learning Analytics</h2>
+                        
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="p-4 border rounded-lg">
+                            <p class="text-sm text-gray-500 mb-1">Optimal Learning Time</p>
+                            <h3 class="text-xl font-bold">9:00 - 11:30 AM</h3>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                            <p class="text-sm text-gray-500 mb-1">Preferred Learning Style</p>
+                            <h3 class="text-xl font-bold">Visual + Hands-on</h3>
+                        </div>
+                        <div class="p-4 border rounded-lg">
+                            <p class="text-sm text-gray-500 mb-1">Most Engaging Topic</p>
+                            <h3 class="text-xl font-bold">Quantum Mechanics</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<script>
+    // Apply saved settings on load
+    window.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) applyTheme(savedTheme);
+
+        const savedTone = localStorage.getItem('tone');
+        if (savedTone) setActiveTone(savedTone);
+
+        const isFocusMode = localStorage.getItem('focus-mode') === 'true';
+        document.getElementById('focus-mode').checked = isFocusMode;
+        document.getElementById('focus-preview').classList.toggle('active', isFocusMode);
+    });
+
+    // Theme selection
+    const themeOptions = document.querySelectorAll('.theme-option');
+    function applyTheme(theme) {
+        document.body.classList.remove('light', 'dark', 'system');
+        document.body.classList.add(theme);
+        localStorage.setItem('theme', theme);
+    }
+    themeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            const selectedTheme = option.getAttribute('data-theme');
+            applyTheme(selectedTheme);
+        });
+    });
+
+    // Tone selection
+    const toneCards = document.querySelectorAll('.tone-card');
+    function setActiveTone(tone) {
+        toneCards.forEach(c => {
+            c.classList.remove('active');
+            if (c.getAttribute('data-tone') === tone) {
+                c.classList.add('active');
+            }
+        });
+        localStorage.setItem('tone', tone);
+        console.log(`Selected tone: ${tone}`);
+    }
+    toneCards.forEach(card => {
+        card.addEventListener('click', () => {
+            const selectedTone = card.getAttribute('data-tone');
+            setActiveTone(selectedTone);
+        });
+    });
+
+    // Focus mode toggle
+    const focusModeCheckbox = document.getElementById('focus-mode');
+    focusModeCheckbox.addEventListener('change', () => {
+        const focusPreview = document.getElementById('focus-preview');
+        const isChecked = focusModeCheckbox.checked;
+        focusPreview.classList.toggle('active', isChecked);
+        localStorage.setItem('focus-mode', isChecked);
+    });
+
+    // Adaptive speed toggle
+    const adaptiveSpeedCheckbox = document.getElementById('adaptive-speed');
+    adaptiveSpeedCheckbox.addEventListener('change', () => {
+        console.log(`Adaptive Learning Speed: ${adaptiveSpeedCheckbox.checked}`);
+    });
+
+    // Multitasking toggle
+    const multitaskingModeCheckbox = document.getElementById('multitasking-mode');
+    multitaskingModeCheckbox.addEventListener('change', () => {
+        console.log(`Multitasking Support: ${multitaskingModeCheckbox.checked}`);
+    });
+
+    // Avatar buttons (optional, demo only)
+    document.querySelectorAll('.avatar-options button').forEach(btn => {
+        btn.addEventListener('click', () => {
+            alert('Avatar option clicked!');
+        });
+    });
+</script>
