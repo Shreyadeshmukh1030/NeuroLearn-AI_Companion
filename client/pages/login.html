@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login | NeuroLearn</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+  />
+  <style>
+    body {
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0fdf4 100%);
+    }
+    .form-input:focus {
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+    .password-toggle {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #6b7280;
+    }
+    .auth-btn {
+      transition: all 0.3s ease;
+    }
+    .auth-btn:hover {
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-4xl bg-white rounded-xl shadow-lg overflow-hidden flex flex-col md:flex-row">
+    <!-- Left Side with Illustration -->
+    <div class="hidden md:flex md:w-1/2 bg-gradient-to-br from-indigo-500 to-purple-600 p-8 items-center justify-center text-white">
+      <div class="text-center">
+        <h2 class="text-3xl font-bold mb-2">Welcome Back!</h2>
+        <p class="mb-6 text-sm">Continue your learning journey with NeuroLearn</p>
+        <img src="../images/login_img.png" alt="Learning illustration" class="w-70 mx-auto" />
+      </div>
+    </div>
+
+    <!-- Right Side with Form -->
+    <div class="w-full md:w-1/2 p-8">
+      <div class="text-center mb-6">
+        <span class="text-3xl font-bold text-indigo-600">Neuro<span class="text-gray-800">Learn</span></span>
+      </div>
+      <h1 class="text-2xl font-bold text-gray-900 mb-6 text-center">Sign in to your account</h1>
+      <form id="login-form" class="space-y-4">
+        <!-- Email -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-envelope text-gray-400"></i>
+            </div>
+            <input type="email" id="email" name="email" required autocomplete="email" placeholder="your@email.com" class="form-input pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:border-indigo-500" />
+          </div>
+        </div>
+
+        <!-- Password -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <i class="fas fa-lock text-gray-400"></i>
+            </div>
+            <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••" class="form-input pl-10 pr-10 py-2 w-full border border-gray-300 rounded-lg focus:border-indigo-500" />
+            <span class="password-toggle" id="toggle-password">
+              <i class="fas fa-eye" id="password-icon"></i>
+            </span>
+          </div>
+        </div>
+
+        <!-- Remember me & Forgot -->
+        <div class="flex items-center justify-between">
+          <label class="flex items-center text-sm">
+            <input type="checkbox" id="remember-me" class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" />
+            <span class="ml-2 text-gray-700">Remember me</span>
+          </label>
+          <a href="forgot-password.html" class="text-sm text-indigo-600 hover:text-indigo-500">Forgot password?</a>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="login-btn" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-md text-sm font-medium auth-btn hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+          Sign in
+        </button>
+
+        <!-- Error Message -->
+        <div id="error-message" class="hidden">
+          <div class="bg-red-50 border-l-4 border-red-400 p-4 mt-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-circle text-red-400"></i>
+              </div>
+              <div class="ml-3">
+                <p class="text-sm text-red-700" id="error-text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Register Link -->
+        <p class="text-sm text-center text-gray-600 mt-6">
+          Don't have an account?
+          <a href="register.html" class="font-medium text-indigo-600 hover:text-indigo-500">Sign up</a>
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // Password toggle
+    const togglePassword = document.getElementById('toggle-password');
+    const passwordInput = document.getElementById('password');
+    const passwordIcon = document.getElementById('password-icon');
+
+    togglePassword.addEventListener('click', () => {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      passwordIcon.classList.toggle('fa-eye');
+      passwordIcon.classList.toggle('fa-eye-slash');
+    });
+
+    // Form submission
+    document.getElementById('login-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const rememberMe = document.getElementById('remember-me').checked;
+
+      const loginButton = document.getElementById('login-btn');
+      loginButton.disabled = true;
+      loginButton.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Signing in...';
+
+      document.getElementById('error-message').classList.add('hidden');
+
+      setTimeout(() => {
+        if (password.length < 8) {
+          showError('Invalid email or password');
+          loginButton.disabled = false;
+          loginButton.textContent = 'Sign in';
+          return;
+        }
+
+        alert('Login successful! Redirecting to dashboard...');
+        // window.location.href = 'dashboard.html';
+      }, 1500);
+    });
+
+    function showError(message) {
+      const errorMessage = document.getElementById('error-message');
+      const errorText = document.getElementById('error-text');
+
+      errorText.textContent = message;
+      errorMessage.classList.remove('hidden');
+      errorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  </script>
+</body>
+</html>
