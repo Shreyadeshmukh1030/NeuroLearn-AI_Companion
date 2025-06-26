@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activities | NeuroLearn</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Activity card animations */
+        @keyframes cardEntrance {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .activity-card {
+            animation: cardEntrance 0.6s ease-out;
+            transition: all 0.3s ease;
+        }
+        .activity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        /* Difficulty indicator */
+        .difficulty-badge.easy { background: #d1fae5; color: #065f46; }
+        .difficulty-badge.medium { background: #fef3c7; color: #92400e; }
+        .difficulty-badge.hard { background: #fee2e2; color: #991b1b; }
+        
+        /* Mood-based filtering */
+        .mood-filter-btn.active {
+            border: 2px solid #4f46e5;
+            background-color: #eef2ff;
+        }
+        
+        /* AR preview effect */
+        .ar-preview {
+            perspective: 1000px;
+        }
+        .ar-preview:hover .ar-content {
+            transform: rotateX(10deg) rotateY(-10deg);
+        }
+        .ar-content {
+            transition: transform 0.5s ease;
+        }
+        
+        /* Materials checklist animation */
+        .checklist-item {
+            transition: all 0.3s ease;
+        }
+        .checklist-item.checked {
+            opacity: 0.7;
+        }
+        .checklist-item.checked span {
+            text-decoration: line-through;
+        }
+        
+        /* Featured activity glow */
+        .featured-activity {
+            position: relative;
+            overflow: hidden;
+        }
+        .featured-activity::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255,255,255,0) 0%,
+                rgba(168,85,247,0.1) 50%,
+                rgba(236,72,153,0.1) 100%
+            );
+            transform: rotate(30deg);
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <span class="text-indigo-600 text-xl font-bold mr-8">NeuroLearn</span>
+                    <div class="hidden md:flex items-center space-x-1 text-sm">
+                        <a href="dashboard.html" class="px-3 py-1 rounded-lg hover:bg-gray-100">Dashboard</a>
+                        <a href="courses.html" class="px-3 py-1 rounded-lg hover:bg-gray-100">Courses</a>
+                        <a href="activities.html" class="px-3 py-1 rounded-lg bg-indigo-50 text-indigo-700">Activities</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <div class="bg-yellow-100 px-3 py-1 rounded-full text-xs font-medium text-yellow-800 flex items-center">
+                            <i class="fas fa-bolt mr-1"></i>
+                            <span>2,450 XP</span>
+                        </div>
+                    </div>
+                    <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="User" class="h-8 w-8 rounded-full">
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Section -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-8 text-white mb-8">
+            <h1 class="text-3xl font-bold mb-2">Hands-on Learning Hub</h1>
+            <p class="text-lg mb-6">Reinforce your knowledge with AI-recommended projects tailored to your lessons and mood.</p>
+            <button class="bg-white text-indigo-600 px-6 py-3 rounded-lg font-medium hover:bg-opacity-90">
+                <i class="fas fa-magic mr-2"></i> Generate Personalized Activities
+            </button>
+        </div>
+        
+        <!-- Activity Discovery -->
+        <div class="mb-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold text-gray-900">Recommended for You</h2>
+                
+                <div class="flex space-x-2 mt-4 md:mt-0">
+                    <!-- Mood Filter -->
+                    <div class="relative">
+                        <button id="mood-filter-btn" class="flex items-center px-4 py-2 bg-white border rounded-lg">
+                            <span class="mr-2">😊 Happy</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="mood-filter-options" class="hidden absolute z-10 mt-1 w-40 bg-white rounded-md shadow-lg py-1">
+                            <button class="mood-filter-btn active w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center" data-mood="happy">
+                                <span class="mr-2">😊</span> Happy
+                            </button>
+                            <button class="mood-filter-btn w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center" data-mood="focused">
+                                <span class="mr-2">🧠</span> Focused
+                            </button>
+                            <button class="mood-filter-btn w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center" data-mood="bored">
+                                <span class="mr-2">😑</span> Bored
+                            </button>
+                            <button class="mood-filter-btn w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center" data-mood="stressed">
+                                <span class="mr-2">😫</span> Stressed
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Category Filter -->
+                    <div class="relative">
+                        <button id="category-filter-btn" class="flex items-center px-4 py-2 bg-white border rounded-lg">
+                            <span class="mr-2">All Categories</span>
+                            <i class="fas fa-chevron-down text-xs"></i>
+                        </button>
+                        <div id="category-filter-options" class="hidden absolute z-10 mt-1 w-48 bg-white rounded-md shadow-lg py-1">
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">All Categories</button>
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Science</button>
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Coding</button>
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Creative</button>
+                            <button class="w-full text-left px-4 py-2 hover:bg-gray-100 text-sm">Math</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- AI Recommendation -->
+            <div class="bg-white rounded-xl shadow-sm p-6 mb-8">
+                <div class="flex items-start">
+                    <div class="bg-indigo-100 p-3 rounded-lg mr-3">
+                        <i class="fas fa-robot text-indigo-600"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-medium text-gray-900 mb-1">AI Recommendation</h3>
+                        <p class="text-gray-700 mb-2">Based on your Quantum Physics lesson and "happy" mood, I suggest these engaging activities:</p>
+                        <div class="flex items-center text-xs">
+                            <span class="bg-indigo-100 text-indigo-800 px-2 py-1 rounded mr-2">
+                                <i class="fas fa-atom mr-1"></i>Quantum Physics
+                            </span>
+                            <span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded">
+                                <i class="fas fa-smile mr-1"></i>Happy mood
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Featured Activity -->
+            <div class="featured-activity bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="p-6">
+                        <div class="flex items-center mb-4">
+                            <span class="bg-purple-600 text-white text-xs px-3 py-1 rounded-full mr-3">Featured</span>
+                            <span class="difficulty-badge medium text-xs px-3 py-1 rounded-full">Medium</span>
+                        </div>
+                        <h3 class="text-2xl font-bold mb-3">Build a Quantum Entanglement Simulator</h3>
+                        <p class="text-gray-600 mb-4">Create a simple JavaScript simulation to visualize entangled particles and their behavior when measured.</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-6">
+                            <span class="bg-blue-100 text-blue-800 text-xs px-3 py-1 rounded-full">
+                                <i class="fas fa-laptop-code mr-1"></i>Coding
+                            </span>
+                            <span class="bg-green-100 text-green-800 text-xs px-3 py-1 rounded-full">
+                                <i class="fas fa-clock mr-1"></i>45-60 mins
+                            </span>
+                            <span class="bg-yellow-100 text-yellow-800 text-xs px-3 py-1 rounded-full">
+                                <i class="fas fa-bolt mr-1"></i>120 XP
+                            </span>
+                        </div>
+                        
+                        <div class="flex space-x-3">
+                            <button class="bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-indigo-700">
+                                Start Activity
+                            </button>
+                            <button class="border border-indigo-600 text-indigo-600 px-6 py-2 rounded-lg font-medium hover:bg-indigo-50">
+                                <i class="fas fa-eye mr-2"></i>Preview
+                            </button>
+                        </div>
+                    </div>
+                    <div class="ar-preview hidden md:block bg-gray-100 flex items-center justify-center">
+                        <div class="ar-content">
+                            <div class="relative h-full">
+                                <div class="absolute inset-0 bg-gradient-to-br from-purple-500 to-pink-600 opacity-20"></div>
+                                <div class="relative z-10 p-8 text-center">
+                                    <i class="fas fa-atom text-5xl text-purple-600 mb-4"></i>
+                                    <p class="font-medium">AR Simulation Available</p>
+                                    <p class="text-sm text-gray-600 mt-1">View in 3D with your camera</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Activities Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Activity 1 -->
+                <div class="activity-card bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="h-48 bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center">
+                        <i class="fas fa-flask text-white text-5xl"></i>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg">DIY Quantum Eraser</h3>
+                            <span class="difficulty-badge easy text-xs px-2 py-1 rounded-full">Easy</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Simple experiment demonstrating wave-particle duality using polarizing filters.</p>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-sm text-gray-500">
+                                <i class="fas fa-clock mr-1"></i>
+                                <span>20-30 mins</span>
+                            </div>
+                            <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                                <i class="fas fa-bolt mr-1"></i>75 XP
+                            </span>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t">
+                            <button class="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">
+                                Start Activity
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activity 2 -->
+                <div class="activity-card bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="h-48 bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                        <i class="fas fa-laptop-code text-white text-5xl"></i>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg">Quantum State Visualizer</h3>
+                            <span class="difficulty-badge hard text-xs px-2 py-1 rounded-full">Hard</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Code a visualization showing superposition states collapsing upon measurement.</p>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-sm text-gray-500">
+                                <i class="fas fa-clock mr-1"></i>
+                                <span>1-2 hours</span>
+                            </div>
+                            <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                                <i class="fas fa-bolt mr-1"></i>150 XP
+                            </span>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t">
+                            <button class="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">
+                                Start Activity
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Activity 3 (More Fun/Engagement Focused) -->
+                <div class="activity-card bg-white rounded-xl shadow-sm overflow-hidden">
+                    <div class="h-48 bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center">
+                        <i class="fas fa-gamepad text-white text-5xl"></i>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold text-lg">Quantum Quiz Show</h3>
+                            <span class="difficulty-badge easy text-xs px-2 py-1 rounded-full">Easy</span>
+                        </div>
+                        <p class="text-gray-600 text-sm mb-4">Test your knowledge with a fun game show style quiz about quantum concepts.</p>
+                        
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center text-sm text-gray-500">
+                                <i class="fas fa-clock mr-1"></i>
+                                <span>15-20 mins</span>
+                            </div>
+                            <span class="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                                <i class="fas fa-bolt mr-1"></i>50 XP
+                            </span>
+                        </div>
+                        
+                        <div class="mt-4 pt-4 border-t">
+                            <button class="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700">
+                                Start Activity
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Activity Categories -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Browse Categories</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <button class="bg-white p-6 rounded-xl shadow-sm text-center hover:bg-indigo-50 transition group">
+                    <div class="bg-indigo-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-200">
+                        <i class="fas fa-flask text-indigo-600 text-xl"></i>
+                    </div>
+                    <h3 class="font-medium">Science</h3>
+                    <p class="text-xs text-gray-500 mt-1">18 Activities</p>
+                </button>
+                <button class="bg-white p-6 rounded-xl shadow-sm text-center hover:bg-blue-50 transition group">
+                    <div class="bg-blue-100 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-200">
+                        <i class
+
+    <script defer src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+    <script>
+      async function setupWebcamAndEmotionDetection() {
+        const videoEl = document.createElement("video");
+        videoEl.setAttribute("autoplay", true);
+        videoEl.setAttribute("playsinline", true);
+        videoEl.setAttribute("muted", true);
+        videoEl.width = 64;
+        videoEl.height = 64;
+        videoEl.style.display = "none";
+        document.body.appendChild(videoEl);
+
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+          videoEl.srcObject = stream;
+        } catch (err) {
+          console.error("Webcam access denied:", err);
+          return;
+        }
+
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri("https://cdn.jsdelivr.net/npm/face-api.js/weights"),
+          faceapi.nets.faceExpressionNet.loadFromUri("https://cdn.jsdelivr.net/npm/face-api.js/weights")
+        ]);
+
+        videoEl.addEventListener("play", () => {
+          const interval = setInterval(async () => {
+            const detections = await faceapi
+              .detectAllFaces(videoEl, new faceapi.TinyFaceDetectorOptions())
+              .withFaceExpressions();
+
+            if (detections.length > 0) {
+              const expressions = detections[0].expressions;
+              const emotion = Object.keys(expressions).reduce((a, b) =>
+                expressions[a] > expressions[b] ? a : b
+              );
+
+              const indicator = document.getElementById("engagement-indicator");
+              const text = document.getElementById("engagement-text");
+
+              if (indicator && text) {
+                if (["sad", "neutral", "angry"].includes(emotion)) {
+                  indicator.classList.remove("bg-green-500");
+                  indicator.classList.add("bg-red-500");
+                  text.innerText = "You seem distracted. Try a quiz!";
+                  const quizBtn = document.getElementById("quiz-btn");
+                  if (quizBtn) quizBtn.classList.add("animate-pulse");
+                } else {
+                  indicator.classList.remove("bg-red-500");
+                  indicator.classList.add("bg-green-500");
+                  text.innerText = "You seem engaged!";
+                  const quizBtn = document.getElementById("quiz-btn");
+                  if (quizBtn) quizBtn.classList.remove("animate-pulse");
+                }
+              }
+            }
+          }, 5000);
+        });
+      }
+
+      window.addEventListener("DOMContentLoaded", setupWebcamAndEmotionDetection);
+    </script>
